@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notes App</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      color: #fff;
+      padding: 5vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 3px #00000066;
+      text-align: center;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    input[type="text"], textarea {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 100%;
+      resize: none;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #00c9a7;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #00a78a;
+    }
+
+    #notesContainer {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .note {
+      background-color: #ffffff1a;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(4px);
+    }
+
+    .note-title {
+      margin: 0;
+      font-size: 1.1rem;
+      cursor: pointer;
+      flex-grow: 1;
+      text-align: center;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    .note-title.completed {
+      color: #ccc;
+    }
+
+    .note-title.completed::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      height: 2px;
+      width: 100%;
+      background-color: black;
+      transform: translateY(-50%);
+    }
+
+    .note input[type="checkbox"] {
+      cursor: pointer;
+      transform: scale(1.2);
+    }
+
+    .note button {
+      background-color: #ff4d4d;
+      font-size: 0.9rem;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .note button:hover {
+      background-color: #d93636;
+    }
+
+    @media (max-width: 600px) {
+      .input-group {
+        width: 90%;
+      }
+
+      .note {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+
+      .note input[type="checkbox"],
+      .note button {
+        align-self: center;
+      }
+
+      .note-title {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📝 My Notes</h1>
+
+  <div class="input-group">
+    <input type="text" id="noteTitle" placeholder="Note Title" />
+    <textarea id="noteBody" rows="4" placeholder="Note Body"></textarea>
+    <button onclick="addNote()">Add Note</button>
+  </div>
+
+  <div id="notesContainer"></div>
+
+  <script>
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+    function saveNotes() {
+      localStorage.setItem("notes", JSON.stringify(notes));
+    }
+
+    function addNote() {
+      const title = document.getElementById("noteTitle").value.trim();
+      const body = document.getElementById("noteBody").value.trim();
+      if (!title || !body) return alert("Both title and body are required.");
+
+      notes.push({ title, body, completed: false });
+      saveNotes();
+      renderNotes();
+      document.getElementById("noteTitle").value = "";
+      document.getElementById("noteBody").value = "";
+    }
+
+    function deleteNote(index) {
+      notes.splice(index, 1);
+      saveNotes();
+      renderNotes();
+    }
+
+    function toggleComplete(index) {
+      notes[index].completed = !notes[index].completed;
+      saveNotes();
+      renderNotes();
+    }
+
+    function viewNote(index) {
+      localStorage.setItem("selectedNoteIndex", index);
+      window.location.href = "note.html";
+    }
+
+    function renderNotes() {
+      const container = document.getElementById("notesContainer");
+      container.innerHTML = notes.map((note, index) => `
+        <div class="note">
+          <input type="checkbox" ${note.completed ? "checked" : ""} onclick="toggleComplete(${index})" />
+          <h3 class="note-title ${note.completed ? 'completed' : ''}" onclick="viewNote(${index})">${note.title}</h3>
+          <button onclick="deleteNote(${index})">🗑</button>
+        </div>
+      `).join("");
+    }
+
+    renderNotes();
+  </script>
+
+</body>
+</html>
