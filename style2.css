@@ -1,0 +1,51 @@
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #43cea2, #185a9d);
+      color: #fff;
+      padding: 5vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 5vw;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 700px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(6px);
+      text-align: center;
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      margin-bottom: 1rem;
+      word-wrap: break-word;
+    }
+
+    p {
+      font-size: clamp(1rem, 2.8vw, 1.3rem);
+      line-height: 1.6;
+      color: #f0f0f0;
+      word-break: break-word;
+    }
+
+    a {
+      margin-top: 2rem;
+      color: #00ffd0;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
